@@ -22,23 +22,23 @@ const boards = [
 ]
 
 function findEmptySquare() {
-    for (let i=0; i<81; i++) {
+    for (let i=1; i<82; i++) {
         const box = document.getElementById(String(i));
         if (box.value === "") {
             return i;
         }
     }
-    return False;
+    return false;
 }
 
 function chooseBoard() {
     const b = boards[Math.floor(Math.random()*20)]
-    for (let i=0; i<81; i++) {
-        if (b[i] === "0") {
+    for (let i=1; i<82; i++) {
+        if (b[i-1] === "0") {
             continue;
         } 
         let box = document.getElementById(String(i));
-        box.value = b[i];
+        box.value = b[i-1];
     }
     return b;
 }
@@ -48,13 +48,75 @@ const board = chooseBoard();
 console.log(board);
 
 function resetBoard() {
-    for (let i=0; i<81; i++) {
+    for (let i=1; i<82; i++) {
         let box = document.getElementById(String(i));
-        if (board[i] === "0") {
+        if (board[i-1] === "0") {
             box.value = ""
             continue;
         } 
-        box.value = board[i];
+        box.value = board[i-1];
     }
     console.log("Board reset");
 }
+
+function validRow(num, idx) {
+    const row = Math.floor(idx/9)
+    for (let i=row*9+1; i<row*9+10; i++) {
+        if (document.getElementById(String(i)) === String(num)) {
+            return false
+        }
+    }
+}
+
+function validCol(num, idx) {
+    const temp = idx % 9
+    if (idx !== 0) {
+        if (temp === 0) {
+            temp = 9
+        }
+        for (let i=0; i<9; i++) {
+            if (document.getElementById(String((9*i)+temp)).value === String(num)) {
+                return false
+            }
+        }
+        return true
+    }
+    for (let i=0; i<9; i++) {
+        if (document.getElementById(String((9*i)+1)).value === String(num)) {
+            return false
+        }
+    }
+    return true
+}
+
+function validSquare(num, idx) {
+    const col = Math.floor(((idx-1) % 9)/3)*3+1
+    const row = Math.floor(idx/9)
+    if (row < 3) {
+        row = 0
+    } else if (row < 6) {
+        row = 3
+    } else {
+        row = 6
+    }
+    for (let x=row*9; x<(row+3)*9; x+9) {
+        for (let y=col; y<col+3; y++) {
+            if (document.getElementById(String(x+y)).value === String(num)) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+function isValid(num, idx) {
+    const rowValid = validRow(num, idx);
+    const colValid = validCol(num, idx);
+    const squareValid = validSquare(num, idx);
+    return rowValid && colValid && squareValid
+}
+
+function solve() {
+
+}
+console.log(Math.floor(30/9))
