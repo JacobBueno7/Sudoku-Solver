@@ -21,9 +21,11 @@ const boards = [
     "000000000009805100051907420290401065000000000140508093026709580005103600000000000".split("")
 ]
 
+var board
+
 function findEmptySquare() {
-    for (let i=1; i<82; i++) {
-        const box = document.getElementById(String(i));
+    for (let i=0; i<81; i++) {
+        const box = document.getElementById(String(i+1));
         if (box.value === "") {
             return i;
         }
@@ -34,24 +36,26 @@ function findEmptySquare() {
 function chooseBoard() {
     const b = boards[Math.floor(Math.random()*20)]
     for (let i=1; i<82; i++) {
+        let box = document.getElementById(String(i));
         if (b[i-1] === "0") {
+            box.value = "";
             continue;
         } 
-        let box = document.getElementById(String(i));
         box.value = b[i-1];
     }
-    return b;
+    setBoard(b);
 }
 
-
-const board = chooseBoard();
-console.log(board);
+function setBoard(b) {
+    board = b;
+    console.log(board);
+}
 
 function resetBoard() {
     for (let i=1; i<82; i++) {
         let box = document.getElementById(String(i));
         if (board[i-1] === "0") {
-            box.value = ""
+            box.value = "";
             continue;
         } 
         box.value = board[i-1];
@@ -60,63 +64,75 @@ function resetBoard() {
 }
 
 function validRow(num, idx) {
-    const row = Math.floor(idx/9)
+    const row = Math.floor(idx/9);
     for (let i=row*9+1; i<row*9+10; i++) {
-        if (document.getElementById(String(i)) === String(num)) {
-            return false
+        if (document.getElementById(String(i)).value === String(num)) {
+            console.log("False")
+            return false;
         }
     }
+    console.log("True")
+    return true;
 }
 
 function validCol(num, idx) {
-    const temp = idx % 9
-    if (idx !== 0) {
-        if (temp === 0) {
-            temp = 9
-        }
+    let temp = idx % 9;
+    // if (0 !== 0) {
+        // if (temp === 0) {
+        //     temp = 8;
+        // }
         for (let i=0; i<9; i++) {
-            if (document.getElementById(String((9*i)+temp)).value === String(num)) {
-                return false
+            if (document.getElementById(String((9*i)+temp+1)).value === String(num)) {
+                console.log("False");
+                return false;
             }
         }
-        return true
-    }
-    for (let i=0; i<9; i++) {
-        if (document.getElementById(String((9*i)+1)).value === String(num)) {
-            return false
-        }
-    }
-    return true
+        console.log("True");
+        return true;
+    // }
+    // for (let i=0; i<9; i++) {
+    //     if (document.getElementById(String((9*i)+1)).value === String(1)) {
+    //         console.log("False");
+    //         return false;
+    //     }
+    // }
+    // console.log("True");
+    // return true;
 }
 
 function validSquare(num, idx) {
-    const col = Math.floor(((idx-1) % 9)/3)*3+1
-    const row = Math.floor(idx/9)
+    let col = Math.floor(((idx-1) % 9)/3)*3+1;
+    let row = Math.floor(idx/9);
+    console.log(col)
+    console.log(row)
     if (row < 3) {
-        row = 0
+        row = 0;
     } else if (row < 6) {
-        row = 3
+        row = 3;
     } else {
-        row = 6
+        row = 6;
     }
-    for (let x=row*9; x<(row+3)*9; x+9) {
+    for (let x=row*9; x<(row*9)+27; x=x+9) {
+        console.log("x: "+String(x))
         for (let y=col; y<col+3; y++) {
+            console.log("y: "+String(y))
             if (document.getElementById(String(x+y)).value === String(num)) {
-                return false
+                console.log("False")
+                return false;
             }
         }
     }
-    return true
+    console.log("True")
+    return true;
 }
 
 function isValid(num, idx) {
     const rowValid = validRow(num, idx);
     const colValid = validCol(num, idx);
     const squareValid = validSquare(num, idx);
-    return rowValid && colValid && squareValid
+    return rowValid && colValid && squareValid;
 }
 
 function solve() {
 
 }
-console.log(Math.floor(30/9))
