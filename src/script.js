@@ -116,6 +116,7 @@ function validSquare(num, idx) {
         console.log("x: "+String(x))
         for (let y=col; y<col+3; y++) {
             console.log("y: "+String(y))
+            console.log("x+y="+String(x+y))
             if (document.getElementById(String(x+y)).value === String(num)) {
                 console.log("False")
                 return false;
@@ -133,6 +134,32 @@ function isValid(num, idx) {
     return rowValid && colValid && squareValid;
 }
 
-function solve() {
+function checkBoard() {
+    for (let x=0; x<81; x++) {
+        const val = document.getElementById(String(x+1)).value
+        if (!(isValid(val, x))) {
+            return false;
+        }
+    }
+    return true;
+}
 
+function solve() {
+    while (true) {
+        const idx = findEmptySquare();
+        if (idx === false) {
+            break;
+        }
+        for (let x=1; x<10; x++) {
+            if (isValid(x, idx)) {
+                const square = document.getElementById(String(idx+1));
+                square.value = x;
+                if (solve()) {
+                    return true;
+                }
+                square.value = "";
+            }
+        }
+    }
+    return false
 }
